@@ -1,4 +1,4 @@
-﻿using PlaidSharp.Models;
+﻿using PlaidSharp.Entities;
 using System;
 
 namespace PlaidSharp.Exceptions

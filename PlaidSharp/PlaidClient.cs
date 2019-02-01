@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
+using PlaidSharp.Entities;
 using PlaidSharp.Exceptions;
-using PlaidSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,15 +10,15 @@ namespace PlaidSharp
 {
     public class PlaidClient
     {
-        public string ClientId { get; set; }
+        private string ClientId { get; set; }
 
-        public string Secret { get; set; }
+        private string Secret { get; set; }
 
-        public string PublicKey { get; set; }
+        private string PublicKey { get; set; }
 
-        public string Environment { get; set; }
+        public string Environment { get; private set; }
 
-        public string Version { get; set; }
+        public string Version { get; private set; }
 
         private readonly HttpClient client;
 
@@ -45,19 +45,19 @@ namespace PlaidSharp
             throw new NotImplementedException();
         }
 
-        public async Task<Auth> GetAuth(string accessToken)
+        public async Task<Auth.AuthResponse> GetAuth(string accessToken)
         {
-            var body = new BaseRequestBody(ClientId, Secret, accessToken);
-            return await PostAsync<Auth>("auth/get", body.ToJson());
+            var request = new Auth.AuthRequest(accessToken);
+            return await PostAsync<Auth.AuthResponse>(request);
         }
 
-        public async Task<Transactions> GetTransactions(string accessToken, DateTime startDate, DateTime endDate, List<string> accountsIds = null, int? count = null, int? offset = null)
+        public async Task<Transactions.TransactionResponse> GetTransactions(string accessToken, DateTime startDate, DateTime endDate, List<string> accountsIds = null, int? count = null, int? offset = null)
         {
-            var body = new TransactionRequestBody(ClientId, Secret, accessToken)
+            var request = new Transactions.TransactionRequest(accessToken)
             {
                 StartDate = startDate,
                 EndDate = endDate,
-                Options = new TransactionOptions
+                Options = new Transactions.TransactionRequest.TransactionOptions
                 {
                     AccountIds = accountsIds,
                     Count = count,
@@ -65,91 +65,95 @@ namespace PlaidSharp
                 }
             };
 
-            return await PostAsync<Transactions>("transactions/get", body.ToJson());
+            return await PostAsync<Transactions.TransactionResponse>(request);
         }
 
-        public async Task<PlaidBalances> GetBalances(string accessToken, List<string> accountIds = null)
+        public async Task<Balance.BalanceResponse> GetBalances(string accessToken, List<string> accountIds = null)
         {
-            var body = new BalanceRequestBody(ClientId, Secret, accessToken)
+            var request = new Balance.BalanceRequest(accessToken)
             {
-                Options = new BalanceOptions
+                Options = new Balance.BalanceRequest.BalanceOptions
                 {
-                    AccountsIds = accountIds
+                    AccountIds = accountIds
                 }
             };
 
-            return await PostAsync<PlaidBalances>("accounts/balance/get", body.ToJson());
+            return await PostAsync<Balance.BalanceResponse>(request);
         }
 
-        public async Task<PlaidItem> GetItem(string accessToken)
+        public async Task<Management.ItemResponse> GetItem(string accessToken)
         {
-            var body = new BaseRequestBody(ClientId, Secret, accessToken);
+            var request = new Management.ItemRequest(accessToken);
 
-            return await PostAsync<PlaidItem>("item/get", body.ToJson());
+            return await PostAsync<Management.ItemResponse>(request);
         }
 
-        public async Task<PlaidItem> UpdateWebhook(string accessToken, string webhook)
+        public async Task<Management.ItemResponse> UpdateWebhook(string accessToken, string webhook)
         {
-            var body = new WebhookRequestBody(ClientId, Secret, accessToken)
+            var request = new Management.WebhookUpdateRequest(accessToken)
             {
                 Webhook = webhook
             };
 
-            return await PostAsync<PlaidItem>("item/webhook/update", body.ToJson());
+            return await PostAsync<Management.ItemResponse>(request);
         }
 
-        public async Task<AccessToken> RotateAccessToken(string accessToken)
+        public async Task<Management.InvalidateAccessTokenResponse> RotateAccessToken(string accessToken)
         {
-            var body = new BaseRequestBody(ClientId, Secret, accessToken);
+            var request = new Management.InvalidateAccessTokenRequest(accessToken);
 
-            return await PostAsync<AccessToken>("item/access_token/invalidate", body.ToJson());
+            return await PostAsync<Management.InvalidateAccessTokenResponse>(request);
         }
 
-        public async Task<RemovedItem> RemoveItem(string accessToken)
+        public async Task<Management.RemoveItemResponse> RemoveItem(string accessToken)
         {
-            var body = new BaseRequestBody(ClientId, Secret, accessToken);
+            var request = new Management.RemoveItemRequest(accessToken);
 
-            return await PostAsync<RemovedItem>("item/remove", body.ToJson());
+            return await PostAsync<Management.RemoveItemResponse>(request);
         }
 
-        public async Task<PlaidInstitutions> SearchInstituions(string query, List<string> products)
+        public async Task<Institutions.InstitutionResponse> SearchInstituions(string query, List<string> products)
         {
-            var body = new InstitutionSearchRequestBody
+            var request = new Institutions.InstitutionSearchRequest()
             {
                 PublicKey = PublicKey,
                 Query = query,
                 Products = products
             };
 
-            return await PostAsync<PlaidInstitutions>("institutions/search", body.ToJson());
+            return await PostAsync<Institutions.InstitutionResponse>(request);
         }
 
-        public async Task<PlaidInstitutions> GetInstitutions(int count, int offset, List<string> products = null)
+        public async Task<Institutions.AllInstitutionsResponse> GetInstitutions(int count, int offset, List<string> products = null)
         {
-            var body = new AllInstitutionsRequestBody
+            var request = new Institutions.AllInstitutionsRequest
             {
                 ClientId = ClientId,
                 Secret = Secret,
                 Count = count,
                 Offset = offset,
-                Options = new AllInstitutionsOptions
+                Options = new Institutions.AllInstitutionsRequest.InstitutionsOptions
                 {
                     Products = products
                 }
             };
 
-            return await PostAsync<PlaidInstitutions>("institutions/get", body.ToJson());
+            return await PostAsync<Institutions.AllInstitutionsResponse>(request);
         }
 
-        private async Task<T> PostAsync<T>(string endpoint, string json) where T : new()
+        public async Task<TResponse> PostAsync<TResponse>(IPlaidRequest request) where TResponse : IPlaidResponse
         {
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            AddCredentials(request);
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(request.ToJson());
+#endif
+            var content = new StringContent(request.ToJson(), System.Text.Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            var req = new HttpRequestMessage(HttpMethod.Post, request.Endpoint)
             {
                 Content = content
             };
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(req);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -157,7 +161,18 @@ namespace PlaidSharp
                 throw new PlaidException(error);
             }
 
-            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync());
+        }
+
+        private void AddCredentials(IPlaidRequest request)
+        {
+            if (request is PlaidAuthorizedRequest req)
+            {
+                if (string.IsNullOrEmpty(req.ClientId))
+                    req.ClientId = ClientId;
+                if (string.IsNullOrEmpty(req.Secret))
+                    req.Secret = Secret;
+            }
         }
     }
 }
