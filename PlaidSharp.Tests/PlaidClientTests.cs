@@ -31,7 +31,7 @@ namespace PlaidSharp.Tests
             var trans = SandboxClient.GetTransactions(AccessToken, startDate, endDate).Result;
 
             // assert
-            Assert.True(trans.PlaidTransactions.Count > 0);
+            Assert.True(trans.Transactions.Count > 0);
         }
 
         [Fact]
