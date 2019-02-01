@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using PlaidSharp.Entities;
 using PlaidSharp.Exceptions;
 using System;
@@ -38,6 +39,14 @@ namespace PlaidSharp
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("Plaid-Version", Version);
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                }
+            };
         }
 
         public string ExchangePublicToken(string publicToken)
@@ -157,7 +166,11 @@ namespace PlaidSharp
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<Error>(await response.Content.ReadAsStringAsync());
+                var responseContent = await response.Content.ReadAsStringAsync();
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine(responseContent);
+#endif
+                var error = JsonConvert.DeserializeObject<Error.ErrorResponse>(responseContent);
                 throw new PlaidException(error);
             }
 

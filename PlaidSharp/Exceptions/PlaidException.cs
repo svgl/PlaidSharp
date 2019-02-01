@@ -1,16 +1,15 @@
-﻿using PlaidSharp.Entities;
-using System;
+﻿using System;
 
 namespace PlaidSharp.Exceptions
 {
     [Serializable]
     public class PlaidException : Exception
     {
-        public virtual Error PlaidError { get; }
+        public virtual Error.ErrorResponse PlaidError { get; }
 
         public PlaidException() { }
 
-        public PlaidException(Error error) : base(error.ToString())
+        public PlaidException(Error.ErrorResponse error) : base(error.ToString())
         {
             PlaidError = error;
         }
