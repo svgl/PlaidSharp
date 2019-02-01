@@ -8,7 +8,7 @@ namespace PlaidSharp.Entities
 
         public List<string> BilledProducts { get; set; }
 
-        public Error Error { get; set; }
+        public Error.ErrorResponse Error { get; set; }
 
         public string InstitutionId { get; set; }
 
