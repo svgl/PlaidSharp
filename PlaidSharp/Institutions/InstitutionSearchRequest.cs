@@ -6,7 +6,7 @@ namespace PlaidSharp.Institutions
     /// <summary>
     /// Use <see cref="InstitutionResponse"/> as response.
     /// </summary>
-    public class InstitutionSearchRequest : PlaidRequest
+    public class InstitutionSearchRequest : PlaidRequest, IHasPublicKey
     {
         public string Query { get; set; }
 

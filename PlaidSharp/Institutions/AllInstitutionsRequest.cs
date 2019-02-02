@@ -2,7 +2,7 @@
 
 namespace PlaidSharp.Institutions
 {
-    public class AllInstitutionsRequest : PlaidRequest
+    public class AllInstitutionsRequest : PlaidRequest, IHasClientId, IHasSecret
     {
         public string ClientId { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace PlaidSharp
 {
-    public class PlaidAuthorizedRequest : PlaidRequest
+    public class PlaidAuthorizedRequest : PlaidRequest, IHasClientId, IHasSecret, IHasAccessToken
     {
         public string ClientId { get; set; }
 
