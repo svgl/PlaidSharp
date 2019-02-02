@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using PlaidSharp.Entities;
 using PlaidSharp.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -49,14 +48,27 @@ namespace PlaidSharp
             };
         }
 
-        public string ExchangePublicToken(string publicToken)
+        public async Task<Tokens.ExchangeTokenResponse> ExchangePublicToken(string publicToken)
         {
-            throw new NotImplementedException();
+            var request = new Tokens.ExchangeTokenRequest
+            {
+                PublicToken = publicToken
+            };
+
+            return await PostAsync<Tokens.ExchangeTokenResponse>(request);
+        }
+
+        public async Task<Tokens.CreatePublicTokenResponse> CreatePublicToken(string accessToken)
+        {
+            var request = new Tokens.CreatePublicTokenRequest(accessToken);
+
+            return await PostAsync<Tokens.CreatePublicTokenResponse>(request);
         }
 
         public async Task<Auth.AuthResponse> GetAuth(string accessToken)
         {
             var request = new Auth.AuthRequest(accessToken);
+
             return await PostAsync<Auth.AuthResponse>(request);
         }
 
