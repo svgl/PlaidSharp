@@ -179,13 +179,17 @@ namespace PlaidSharp
 
         private void AddCredentials(IPlaidRequest request)
         {
-            if (request is PlaidAuthorizedRequest req)
-            {
-                if (string.IsNullOrEmpty(req.ClientId))
-                    req.ClientId = ClientId;
-                if (string.IsNullOrEmpty(req.Secret))
-                    req.Secret = Secret;
-            }
+            if (request is IHasClientId clientReq)
+                if (string.IsNullOrEmpty(clientReq.ClientId))
+                    clientReq.ClientId = ClientId;
+
+            if (request is IHasSecret secretReq)
+                if (string.IsNullOrEmpty(secretReq.Secret))
+                    secretReq.Secret = Secret;
+
+            if (request is IHasPublicKey pkReq)
+                if (string.IsNullOrEmpty(pkReq.PublicKey))
+                    pkReq.PublicKey = PublicKey;
         }
     }
 }

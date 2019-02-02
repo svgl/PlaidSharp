@@ -6,7 +6,7 @@
     /// <remarks>
     /// Use <see cref="InstitutionResponse"/> for the reponse
     /// </remarks>
-    public class InstitutionByIdRequest : PlaidRequest
+    public class InstitutionByIdRequest : PlaidRequest, IHasPublicKey
     {
         public string InstitutionId { get; set; }
 

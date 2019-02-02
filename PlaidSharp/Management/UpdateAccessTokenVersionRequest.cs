@@ -1,6 +1,6 @@
 ﻿namespace PlaidSharp.Management
 {
-    public class UpdateAccessTokenVersionRequest : PlaidRequest
+    public class UpdateAccessTokenVersionRequest : PlaidRequest, IHasClientId, IHasSecret
     {
         public string ClientId { get; set; }
 
