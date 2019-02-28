@@ -1,21 +1,22 @@
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace PlaidSharp.Tests
 {
     public class PlaidClientTest
     {
-        public PlaidClient SandboxClient = new PlaidClient("clientId", "secret", "publicKey", Environments.Sandbox, "2018-05-22");
+        public PlaidClient SandboxClient = new PlaidClient("5ac64a68bdc6a40eb40caf75", "d0d1c449f7f3490e9c7fd03738f104", "231f407f65b7a0f6dbadaa200f5732", Environments.Sandbox, "2018-05-22");
 
-        private readonly string AccessToken = "accessToken";
+        private readonly string AccessToken = "access-sandbox-bb5e8663-c0d2-4d29-8995-79fd8613a2b1";
 
         [Fact]
-        public void Should_Get_Auth()
+        public async Task Should_Get_Auth()
         {
             // act
-            var auth = SandboxClient.GetAuth(AccessToken).Result;
+            var auth = await SandboxClient.GetAuth(AccessToken);
 
             // assert
             auth.Accounts.ShouldNotBeNull();

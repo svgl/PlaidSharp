@@ -14,7 +14,7 @@ namespace PlaidSharp
 
         private string Secret { get; set; }
 
-        private string PublicKey { get; set; }
+        public string PublicKey { get; set; }
 
         public string Environment { get; private set; }
 
