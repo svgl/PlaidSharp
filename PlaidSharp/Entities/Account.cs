@@ -19,9 +19,9 @@
 
     public class Balances
     {
-        public int? Available { get; set; }
+        public double? Available { get; set; }
 
-        public int? Current { get; set; }
+        public double? Current { get; set; }
 
         public object Limit { get; set; }
 
