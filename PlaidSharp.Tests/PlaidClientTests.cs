@@ -27,14 +27,14 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Transactions()
+        public async Task Should_Get_Transactions()
         {
             // arrange
             var startDate = DateTime.Now.AddMonths(-2);
             var endDate = DateTime.Now;
 
             // act
-            var trans = SandboxClient.GetTransactions(AccessToken, startDate, endDate).Result;
+            var trans = await SandboxClient.GetTransactions(AccessToken, startDate, endDate);
 
             // assert
             trans.Transactions.ShouldNotBeNull();
@@ -45,10 +45,10 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Balances()
+        public async Task Should_Get_Balances()
         {
             // act
-            var bals = SandboxClient.GetBalances(AccessToken).Result;
+            var bals = await SandboxClient.GetBalances(AccessToken);
 
             // assert
             bals.Accounts.ShouldNotBeNull();
@@ -59,10 +59,10 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Item()
+        public async Task Should_Get_Item()
         {
             // act
-            var item = SandboxClient.GetItem(AccessToken).Result;
+            var item = await SandboxClient.GetItem(AccessToken);
 
             // assert
             item.Item.ShouldNotBeNull();
@@ -71,14 +71,14 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_All_Institutions()
+        public async Task Should_Get_All_Institutions()
         {
             // arrange
             int count = 5;
             int offset = 0;
             var products = new List<string> { "auth" };
             // act
-            var ins = SandboxClient.GetInstitutions(count, offset, products).Result;
+            var ins = await SandboxClient.GetInstitutions(count, offset, products);
 
             // assert
             ins.Institutions.ShouldNotBeNull();
