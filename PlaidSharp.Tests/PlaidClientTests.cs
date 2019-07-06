@@ -8,9 +8,14 @@ namespace PlaidSharp.Tests
 {
     public class PlaidClientTest
     {
-        public PlaidClient SandboxClient = new PlaidClient("5ac64a68bdc6a40eb40caf75", "d0d1c449f7f3490e9c7fd03738f104", "231f407f65b7a0f6dbadaa200f5732", Environments.Sandbox, "2018-05-22");
+        public PlaidClient SandboxClient;
 
-        private readonly string AccessToken = "access-sandbox-bb5e8663-c0d2-4d29-8995-79fd8613a2b1";
+        private readonly string AccessToken = "accessToken";
+
+        public PlaidClientTest()
+        {
+            SandboxClient = new PlaidClient("clientId", "secret", "publicKey", Environments.Sandbox, "2018-05-22");
+        }
 
         [Fact]
         public async Task Should_Get_Auth()
@@ -27,14 +32,14 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Transactions()
+        public async Task Should_Get_Transactions()
         {
             // arrange
             var startDate = DateTime.Now.AddMonths(-2);
             var endDate = DateTime.Now;
 
             // act
-            var trans = SandboxClient.GetTransactions(AccessToken, startDate, endDate).Result;
+            var trans = await SandboxClient.GetTransactions(AccessToken, startDate, endDate);
 
             // assert
             trans.Transactions.ShouldNotBeNull();
@@ -45,10 +50,10 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Balances()
+        public async Task Should_Get_Balances()
         {
             // act
-            var bals = SandboxClient.GetBalances(AccessToken).Result;
+            var bals = await SandboxClient.GetBalances(AccessToken);
 
             // assert
             bals.Accounts.ShouldNotBeNull();
@@ -59,10 +64,10 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_Item()
+        public async Task Should_Get_Item()
         {
             // act
-            var item = SandboxClient.GetItem(AccessToken).Result;
+            var item = await SandboxClient.GetItem(AccessToken);
 
             // assert
             item.Item.ShouldNotBeNull();
@@ -71,14 +76,14 @@ namespace PlaidSharp.Tests
         }
 
         [Fact]
-        public void Should_Get_All_Institutions()
+        public async Task Should_Get_All_Institutions()
         {
             // arrange
             int count = 5;
             int offset = 0;
             var products = new List<string> { "auth" };
             // act
-            var ins = SandboxClient.GetInstitutions(count, offset, products).Result;
+            var ins = await SandboxClient.GetInstitutions(count, offset, products);
 
             // assert
             ins.Institutions.ShouldNotBeNull();
