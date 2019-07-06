@@ -10,7 +10,7 @@ namespace PlaidSharp.Demo.Plaid
 
         public PlaidService(IConfiguration configuration)
         {
-            PlaidClient = new PlaidClient(configuration["Plaid:ClientId"], configuration["Plaid:Secret"], configuration["Plaid:PublicKey"], Environments.Sandbox, "2018-05-22");
+            PlaidClient = new PlaidClient(configuration["Plaid:ClientId"], configuration["Plaid:Secret"], configuration["Plaid:PublicKey"], Environments.Sandbox, PlaidConsts.ApiVersion);
         }
     }
 }

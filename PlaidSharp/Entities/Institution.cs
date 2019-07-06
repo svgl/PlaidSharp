@@ -4,6 +4,8 @@ namespace PlaidSharp.Entities
 {
     public class Institution
     {
+        public List<string> CountryCodes { get; set; }
+        
         public List<InstitutionCredentials> Credentials { get; set; }
 
         public bool HasMfa { get; set; }

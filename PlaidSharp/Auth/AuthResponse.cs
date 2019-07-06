@@ -17,6 +17,10 @@ namespace PlaidSharp.Auth
 
             public List<Eft> EFT { get; set; }
 
+            public List<InternationalNumbers> International { get; set; }
+
+            public List<Bacs> BACS { get; set; }
+
             public struct Ach
             {
                 public string Account { get; set; }
@@ -37,6 +41,25 @@ namespace PlaidSharp.Auth
                 public string Institution { get; set; }
 
                 public string Branch { get; set; }
+            }
+            
+            public struct InternationalNumbers
+            {
+                public string AccountId { get; set; }
+                
+                public string BIC { get; set; }
+                
+                public string IBAN { get; set; }
+            }
+            
+            public struct Bacs
+            {
+                public string Account { get; set; }
+                
+                public string AccountId { get; set; }
+                
+                public string SortCode { get; set; }
+                
             }
         }
     }

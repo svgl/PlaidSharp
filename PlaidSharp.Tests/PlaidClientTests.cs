@@ -14,7 +14,7 @@ namespace PlaidSharp.Tests
 
         public PlaidClientTest()
         {
-            SandboxClient = new PlaidClient("clientId", "secret", "publicKey", Environments.Sandbox, "2018-05-22");
+            SandboxClient = new PlaidClient("clientId", "secret", "publicKey", Environments.Sandbox, PlaidConsts.ApiVersion);
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace PlaidSharp.Tests
         public async Task Should_Get_All_Institutions()
         {
             // arrange
-            int count = 5;
-            int offset = 0;
+            var count = 5;
+            var offset = 0;
             var products = new List<string> { "auth" };
             // act
             var ins = await SandboxClient.GetInstitutions(count, offset, products);
@@ -92,6 +92,7 @@ namespace PlaidSharp.Tests
             ins.Institutions[0].HasMfa.ShouldNotBeNull();
             ins.Institutions[0].InstitutionId.ShouldNotBeNullOrEmpty();
             ins.Institutions[0].Name.ShouldNotBeNullOrEmpty();
+            ins.Institutions[0].CountryCodes[0].ShouldNotBeNullOrEmpty();
             ins.RequestId.ShouldNotBeNullOrEmpty();
         }
     }

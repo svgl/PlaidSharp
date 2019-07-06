@@ -8,7 +8,7 @@ namespace PlaidSharp.Entities
     {
         public string AccountId { get; set; }
 
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public string IsoCurrencyCode { get; set; }
 
@@ -42,9 +42,11 @@ namespace PlaidSharp.Entities
 
             public string City { get; set; }
 
-            public string State { get; set; }
+            public string Region { get; set; }
 
-            public string Zip { get; set; }
+            public string PostalCode { get; set; }
+            
+            public string Country { get; set; }
 
             [JsonProperty("lat")]
             public double? Latitude { get; set; }
